@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Google Messages · Account Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #121217;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            font-family: 'Google Sans', 'Roboto', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+        }
+
+        /* main container - scrollable only when dropdown expands */
+        .account-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #121217;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* FIXED HEADER SECTION: email + profile + greeting remain sticky at top during scroll */
+        .fixed-header-area {
+            position: sticky;
+            top: 0;
+            background-color: #121217;
+            z-index: 20;
+            padding: 24px 24px 12px 24px;
+            transition: all 0.2s ease;
+        }
+
+        /* profile wrapper inside fixed area - transitions for shrinking */
+        .profile-pic-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 12px auto;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .profile-circle {
+            width: 120px;
+            height: 120px;
+            background-color: #2B2D36;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 56px;
+            color: #BDC1D0;
+            border: 2px solid rgba(255,255,255,0.1);
+            transition: all 0.2s;
+        }
+        .camera-icon {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            background-color: #70B9FF;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #121212;
+            border: 2px solid #121217;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .camera-icon:active {
+            transform: scale(0.92);
+        }
+
+        /* email + greeting */
+        .email-header {
+            text-align: center;
+            margin-bottom: 12px;
+            width: 100%;
+        }
+        .email-address {
+            font-size: 24px;
+            font-weight: 500;
+            color: #F0F2F8;
+            letter-spacing: -0.3px;
+            word-break: break-all;
+        }
+        .greeting {
+            font-size: 20px;
+            font-weight: 500;
+            color: #E9EDF2;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        /* navbar that appears after shrink: hidden initially, shown on scroll */
+        .compact-navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #121217;
+            padding: 8px 16px;
+            border-radius: 60px;
+            margin-top: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            right: 16px;
+            pointer-events: none;
+        }
+        .compact-navbar.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        .compact-email {
+            font-size: 16px;
+            font-weight: 500;
+            color: #F0F2F8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+        .compact-profile-icon {
+            width: 36px;
+            height: 36px;
+            background-color: #2B2D36;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #BDC1D0;
+        }
+
+        /* scrollable content area - pushes down when dropdown opens */
+        .scrollable-content {
+            flex: 1;
+            padding: 0 24px 48px 24px;
+            transition: margin-top 0.2s;
+        }
+
+        /* menu cards */
+        .menu-card {
+            background-color: #1C1D26;
+            border-radius: 28px;
+            width: 100%;
+            margin-bottom: 16px;
+            overflow: hidden;
+            border: 0.5px solid rgba(255,255,255,0.04);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: background 0.12s;
+            border-bottom: 0.5px solid rgba(255,255,255,0.05);
+        }
+        .menu-item:active {
+            background-color: #2A2D38;
+        }
+        .menu-item-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .menu-icon {
+            width: 30px;
+            font-size: 22px;
+            color: #BAC0DC;
+            text-align: center;
+        }
+        .menu-label {
+            font-size: 17px;
+            font-weight: 500;
+            color: #F0F2F8;
+            letter-spacing: -0.2px;
+        }
+
+        /* Switch account card custom layout: left word, right: small count badge + chevron */
+        .switch-left-label {
+            flex: 1;
+        }
+        .switch-right-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .account-count-badge {
+            background-color: #3C3F52;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 40px;
+            min-width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 10px;
+            font-family: monospace;
+            letter-spacing: 0.3px;
+        }
+        .dropdown-chevron {
+            font-size: 20px;
+            color: #A5A9C2;
+            transition: transform 0.2s;
+            cursor: pointer;
+            width: 32px;
+            text-align: center;
+        }
+        .dropdown-chevron.rotated {
+            transform: rotate(180deg);
+        }
+
+        /* Dropdown list container - pushes content down */
+        .account-dropdown-container {
+            width: 100%;
+            background-color: #1C1D26;
+            border-radius: 0 0 28px 28px;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            margin-bottom: 0;
+        }
+        .account-dropdown-container.open {
+            max-height: 800px; /* enough to show many accounts */
+            margin-bottom: 16px;
+        }
+        .dropdown-account-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-top: 0.5px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .dropdown-account-item:active {
+            background-color: #2A2D38;
+        }
+        .dropdown-account-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+        }
+        .dropdown-avatar {
+            width: 44px;
+            height: 44px;
+            background-color: #3C3F52;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #CFD4E6;
+            flex-shrink: 0;
+        }
+        .dropdown-name-email {
+            display: flex;
+            flex-direction: column;
+        }
+        .dropdown-username {
+            font-size: 16px;
+            font-weight: 500;
+            color: #F0F2F8;
+        }
+        .dropdown-email-small {
+            font-size: 12px;
+            color: #8E93AE;
+            margin-top: 2px;
+        }
+        .info-icon-dropdown {
+            color: #70B9FF;
+            font-size: 18px;
+            width: 32px;
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        /* manage card */
+        .manage-card-centered {
+            background-color: #1C1D26;
+            border-radius: 40px;
+            width: 100%;
+            padding: 16px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.12s;
+            margin-bottom: 16px;
+            border: 0.5px solid rgba(255,255,255,0.04);
+        }
+        .manage-text {
+            font-size: 17px;
+            font-weight: 500;
+            color: #F0F2F8;
+        }
+
+        .section-header {
+            width: 100%;
+            margin: 20px 0 12px 0;
+            padding-left: 8px;
+        }
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #A5A9C2;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .footer-links {
+            width: 100%;
+            margin-top: 36px;
+            text-align: center;
+            padding: 16px 0 12px;
+            font-size: 13px;
+            color: #8E93AE;
+        }
+        .footer-links a {
+            color: #8E9AFF;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 0 6px;
+        }
+
+        /* hide scrollbar but allow scrolling */
+        body {
+            overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+        body::-webkit-scrollbar {
+            display: none; /* Chrome/Safari/Opera */
+        }
+        .account-container {
+            scrollbar-width: none;
+        }
+        .account-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .fixed-header-area {
+                padding: 20px 20px 10px 20px;
+            }
+            .scrollable-content {
+                padding: 0 20px 40px 20px;
+            }
+            .profile-pic-wrapper {
+                width: 110px;
+                height: 110px;
+            }
+            .profile-circle {
+                width: 110px;
+                height: 110px;
+                font-size: 52px;
+            }
+            .email-address {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="account-container">
+    <!-- Fixed header area: sticky, contains email, profile, greeting -->
+    <div class="fixed-header-area" id="fixedHeaderArea">
+        <div class="email-header">
+            <div class="email-address">hochieng86@gmail.com</div>
+        </div>
+        <div class="profile-pic-wrapper" id="profilePicWrapper">
+            <div class="profile-circle">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="camera-icon" id="cameraIcon">
+                <i class="fas fa-camera"></i>
+            </div>
+        </div>
+        <div class="greeting">Hi, Sir!</div>
+    </div>
+
+    <!-- Compact navbar (appears on scroll) -->
+    <div class="compact-navbar" id="compactNavbar">
+        <div class="compact-email" id="compactEmail">hochieng86@gmail.com</div>
+        <div class="compact-profile-icon">
+            <i class="fas fa-user-circle"></i>
+        </div>
+    </div>
+
+    <!-- Scrollable content area: everything below will push when dropdown opens -->
+    <div class="scrollable-content" id="scrollableContent">
+        <!-- Manage your Google Account -->
+        <div class="manage-card-centered" id="manageAccountBtn">
+            <span class="manage-text">Manage your Google Account</span>
+        </div>
+
+        <!-- SWITCH ACCOUNT CARD with explicit removal of arrows and new count badge + chevron -->
+        <div class="menu-card" id="switchAccountCard">
+            <div class="menu-item" id="switchAccountMainRow">
+                <div class="menu-item-left switch-left-label">
+                  <span class="menu-label">Switch account</span>
+                </div>
+                <div class="switch-right-controls">
+                    <!-- small circle count badge with max 10+ logic -->
+                    <div class="account-count-badge" id="accountCountBadge">17</div>
+                    <!-- dropdown inverted ">" looking downwards (chevron) -->
+                    <div class="dropdown-chevron" id="dropdownChevron">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- dropdown list container -->
+            <div class="account-dropdown-container" id="accountDropdownContainer">
+                <!-- 17 placeholder accounts will be injected via JS -->
+            </div>
+        </div>
+
+        <!-- More from this app section -->
+        <div class="section-header">
+            <div class="section-title">More from this app</div>
+        </div>
+
+        <div class="menu-card">
+            <div class="menu-item" id="profileBtn">
+                <div class="menu-item-left">
+                    <div class="menu-icon"><i class="fas fa-user-circle"></i></div>
+                    <span class="menu-label">Your profile</span>
+                </div>
+            </div>
+            <div class="menu-item" id="archivedBtn">
+                <div class="menu-item-left">
+                    <div class="menu-icon"><i class="fas fa-archive"></i></div>
+                    <span class="menu-label">Archived</span>
+                </div>
+            </div>
+            <div class="menu-item" id="trashBtn">
+                <div class="menu-item-left">
+                    <div class="menu-icon"><i class="fas fa-trash-alt"></i></div>
+                    <span class="menu-label">Trash</span>
+                </div>
+            </div>
+            <div class="menu-item" id="spamBtn">
+                <div class="menu-item-left">
+                    <div class="menu-icon"><i class="fas fa-ban"></i></div>
+                    <span class="menu-label">Spam and blocked</span>
+                </div>
+            </div>
+            <div class="menu-item" id="markReadBtn">
+                <div class="menu-item-left">
+                    <div class="menu-icon"><i class="fas fa-envelope-open-text"></i></div>
+                    <span class="menu-label">Mark all as read</span>
+                </div>
+            </div>
+            <div class="menu-item" id="devicePairingBtn">
+                <div class="menu-item-left">
+                    <div class="menu-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <span class="menu-label">Device pairing</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-card">
+            <div class="menu-item" id="dataInMessagesBtn">
+                <div class="menu-icon"><i class="fas fa-ban"></i></div>
+                    <div class="menu-icon"><i class="fas fa-chart-simple"></i></div>
+                    <span class="menu-label">Your data in Messages</span>
+                </div>
+            </div>
+            <div class="menu-item" id="messagesSettingsBtn">
+                <div class="menu-item-left">
+                    <div class="menu-icon"><i class="fas fa-sliders-h"></i></div>
+                    <span class="menu-label">Messages settings</span>
+                </div>
+            </div>
+            <div class="menu-item" id="helpFeedbackBtn">
+                <div class="menu-item-left">
+                    <div class="menu-icon"><i class="fas fa-question-circle"></i></div>
+                    <span class="menu-label">Help and feedback</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-links">
+            <a href="#" id="privacyLink">Privacy Policy</a>
+            <span>•</span>
+            <a href="#" id="termsLink">Terms of Service</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // Helper: press feedback and console log
+        function addPressEffect(element, logMessage) {
+            if (!element) return;
+            element.addEventListener('click', (e) => {
+                e.stopPropagation();
+                console.log(logMessage);
+                const originalTransition = element.style.transition;
+                element.style.backgroundColor = '#2C2F3E';
+                setTimeout(() => element.style.backgroundColor = '', 130);
+            });
+        }
+
+        // ---- Generate 17 placeholder accounts for dropdown ----
+        const accounts = [];
+        const firstNames = ["Alex", "Jamie", "Taylor", "Morgan", "Casey", "Riley", "Jordan", "Sasha", "Dakota", "Quinn", "Blake", "Avery", "Cameron", "Emerson", "Finley", "Harper", "Logan"];
+        const domains = ["gmail.com", "googlemail.com", "outlook.com", "yahoo.com"];
+        
+        for (let i = 1; i <= 17; i++) {
+            let name = firstNames[(i-1) % firstNames.length] + (i > firstNames.length ? i : "");
+            let email = `${name.toLowerCase()}@${domains[i % domains.length]}`;
+            accounts.push({ username: name, email: email, initial: name.charAt(0) });
+        }
+        
+        const dropdownContainer = document.getElementById('accountDropdownContainer');
+        function buildDropdownList() {
+            if (!dropdownContainer) return;
+            dropdownContainer.innerHTML = '';
+            accounts.forEach((acc, idx) => {
+                const item = document.createElement('div');
+                item.className = 'dropdown-account-item';
+                item.setAttribute('data-account-index', idx);
+                item.innerHTML = `
+                    <div class="dropdown-account-info">
+                        <div class="dropdown-avatar">${acc.initial}</div>
+                        <div class="dropdown-name-email">
+                            <div class="dropdown-username">${acc.username}</div>
+                            <div class="dropdown-email-small">${acc.email}</div>
+                        </div>
+                    </div>
+                    <div class="info-icon-dropdown"><i class="fas fa-info-circle"></i></div>
+                `;
+                // make each item clickable (does nothing besides log)
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    console.log(`[Account Dropdown] Clicked: ${acc.username} (${acc.email}) - placeholder`);
+                    // optional visual feedback
+                    item.style.backgroundColor = '#2A2D38';
+                    setTimeout(() => item.style.backgroundColor = '', 150);
+                });
+                dropdownContainer.appendChild(item);
+            });
+        }
+        buildDropdownList();
+
+        // count badge: total accounts = 17 (if >10 display 10+)
+        const countBadge = document.getElementById('accountCountBadge');
+        if (countBadge) {
+            const total = accounts.length;
+            countBadge.innerText = total > 10 ? '10+' : total.toString();
+        }
+
+        // Dropdown toggle logic: open/close with chevron rotation, pushes content down
+        const chevron = document.getElementById('dropdownChevron');
+        const dropdownDiv = document.getElementById('accountDropdownContainer');
+        let isOpen = false;
+        
+        function toggleDropdown(event) {
+            if (event) event.stopPropagation();
+            isOpen = !isOpen;
+            if (isOpen) {
+                dropdownDiv.classList.add('open');
+                chevron.classList.add('rotated');
+            } else {
+                dropdownDiv.classList.remove('open');
+                chevron.classList.remove('rotated');
+            }
+            console.log(`[Dropdown] ${isOpen ? 'Opened' : 'Closed'} - accounts list visible, page becomes scrollable if needed`);
+        }
+        
+        if (chevron) {
+            chevron.addEventListener('click', toggleDropdown);
+        }
+        // also clicking on the entire row's right side? but better keep chevron only.
+        // Prevent main row click from toggling (only chevron toggles)
+        const mainRow = document.getElementById('switchAccountMainRow');
+        if (mainRow) {
+            mainRow.addEventListener('click', (e) => {
+                // if click target is not chevron or its children, do nothing except existing press effect
+                if (!e.target.closest('.dropdown-chevron')) {
+                    console.log('[Account] Switch account row clicked (non-chevron) - placeholder');
+                    // visual feedback but no dropdown toggle
+                    const originalBg = mainRow.style.backgroundColor;
+                    mainRow.style.backgroundColor = '#2C2F3E';
+                    setTimeout(() => mainRow.style.backgroundColor = '', 130);
+                }
+            });
+        }
+        
+        // ========== STICKY HEADER SHRINK LOGIC ==========
+        // On scroll: profile picture shrinks and moves to compact navbar, email moves to navbar
+        const fixedHeader = document.getElementById('fixedHeaderArea');
+        const compactNav = document.getElementById('compactNavbar');
+        const profileWrapper = document.getElementById('profilePicWrapper');
+        const profileCircle = document.querySelector('.profile-circle');
+        const cameraIconElem = document.getElementById('cameraIcon');
+        const emailHeaderDiv = document.querySelector('.email-address');
+        const greetingDiv = document.querySelector('.greeting');
+        const scrollable = document.getElementById('scrollableContent');
+        
+        // create a sentinel to track scroll position
+        let lastScrollY = 0;
+        let shrinkActive = false;
+        
+        function handleScroll() {
+            const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+            // threshold: when scroll > 30px start shrinking header and show navbar
+            if (scrollY > 30 && !shrinkActive) {
+                shrinkActive = true;
+                // shrink profile wrapper
+                if (profileWrapper) {
+                    profileWrapper.style.width = '56px';
+                    profileWrapper.style.height = '56px';
+                    profileWrapper.style.margin = '0 auto 6px auto';
+                    if (profileCircle) {
+                        profileCircle.style.width = '56px';
+                        profileCircle.style.height = '56px';
+                        profileCircle.style.fontSize = '28px';
+                    }
+                    if (cameraIconElem) cameraIconElem.style.transform = 'scale(0.7)';
+                }
+                // hide greeting text to save space
+                if (greetingDiv) greetingDiv.style.display = 'none';
+                // reduce email font size slightly
+                if (emailHeaderDiv) emailHeaderDiv.style.fontSize = '18px';
+                // show compact navbar
+                if (compactNav) compactNav.classList.add('show');
+                // add transition effect to header area padding
+                if (fixedHeader) fixedHeader.style.paddingBottom = '8px';
+            } 
+            else if (scrollY <= 30 && shrinkActive) {
+                shrinkActive = false;
+                if (profileWrapper) {
+                    profileWrapper.style.width = '';
+                    profileWrapper.style.height = '';
+                    profileWrapper.style.margin = '';
+                    if (profileCircle) {
+                        profileCircle.style.width = '';
+                        profileCircle.style.height = '';
+                        profileCircle.style.fontSize = '';
+                    }
+                    if (cameraIconElem) cameraIconElem.style.transform = '';
+                }
+                if (greetingDiv) greetingDiv.style.display = '';
+                if (emailHeaderDiv) emailHeaderDiv.style.fontSize = '';
+                if (compactNav) compactNav.classList.remove('show');
+                if (fixedHeader) fixedHeader.style.paddingBottom = '';
+            }
+        }
+        
+        window.addEventListener('scroll', handleScroll);
+        // initial call
+        handleScroll();
+        
+        // Ensure that when dropdown opens, the page becomes scrollable automatically because max-height increases.
+        // No extra steps needed because container expands and body scroll appears (scrollbar hidden but scroll works)
+        
+        // Attach press effects for all menu items (preserve original behavior)
+        addPressEffect(document.getElementById('manageAccountBtn'), '[Account] Manage your Google Account — placeholder');
+        addPressEffect(document.getElementById('profileBtn'), '[Account] Your profile — placeholder');
+        addPressEffect(document.getElementById('archivedBtn'), '[Account] Archived — placeholder');
+        addPressEffect(document.getElementById('trashBtn'), '[Account] Trash — placeholder');
+        addPressEffect(document.getElementById('spamBtn'), '[Account] Spam and blocked — placeholder');
+        addPressEffect(document.getElementById('markReadBtn'), '[Account] Mark all as read — placeholder');
+        addPressEffect(document.getElementById('devicePairingBtn'), '[Account] Device pairing — placeholder');
+        addPressEffect(document.getElementById('dataInMessagesBtn'), '[Account] Your data in Messages — placeholder');
+        addPressEffect(document.getElementById('messagesSettingsBtn'), '[Account] Messages settings — placeholder');
+        addPressEffect(document.getElementById('helpFeedbackBtn'), '[Account] Help and feedback — placeholder');
+        
+        // Profile picture & camera
+        const profilePicWrapperDiv = document.getElementById('profilePicWrapper');
+        const cameraBtn = document.getElementById('cameraIcon');
+        if (profilePicWrapperDiv) {
+            profilePicWrapperDiv.addEventListener('click', (e) => {
+                if (e.target === cameraBtn || cameraBtn.contains(e.target)) return;
+                console.log('[Profile] Profile picture clicked — change avatar placeholder');
+                profilePicWrapperDiv.style.opacity = '0.8';
+                setTimeout(() => profilePicWrapperDiv.style.opacity = '1', 150);
+            });
+        }
+        if (cameraBtn) {
+            cameraBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                console.log('[Camera] Change profile picture clicked — open image picker placeholder');
+                cameraBtn.style.transform = 'scale(0.9)';
+                setTimeout(() => cameraBtn.style.transform = '', 150);
+            });
+        }
+        
+        // footer links
+        const privacyLink = document.getElementById('privacyLink');
+        const termsLink = document.getElementById('termsLink');
+        if (privacyLink) {
+            privacyLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('[Footer] Privacy Policy clicked — placeholder');
+            });
+        }
+        if (termsLink) {
+            termsLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('[Footer] Terms of Service clicked — placeholder');
+            });
+        }
+        
+        // extra: ensure any item in "Switch account" row (non-chevron) logs as requested
+        const switchRow = document.getElementById('switchAccountMainRow');
+        if(switchRow) {
+            const leftPart = switchRow.querySelector('.switch-left-label');
+            if(leftPart) leftPart.style.cursor = 'pointer';
+        }
+        
+        console.log('Updated UI: scrollbar hidden, switch account card has count badge + downward chevron, dropdown pushes content, fixed header shrinks on scroll, 17 placeholder accounts added.');
+    })();
+</script>
+</body>
+</html>
