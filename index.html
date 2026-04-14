@@ -459,7 +459,7 @@
             font-size: 15px;
         }
 
-        /* ========= ACCOUNT PAGE (NEW) ========= */
+        /* ========= ACCOUNT VIEW (EXACTLY AS PROVIDED, WITH X BUTTON ADDED TO HEADER) ========= */
         .account-view {
             display: none;
             flex-direction: column;
@@ -469,7 +469,7 @@
             overflow: hidden;
             min-height: 0;
         }
-        /* Account header: same style as main-header but with X button on far right */
+        /* Account header: modified to include X button on far right */
         .account-header {
             position: relative;
             display: flex;
@@ -487,6 +487,7 @@
             letter-spacing: -0.3px;
             color: #E9EDF2;
         }
+        /* X button on far right */
         .close-account-btn {
             font-size: 22px;
             color: #C3C9E0;
@@ -502,7 +503,6 @@
         }
         .close-account-btn:active { opacity: 0.6; background-color: #3C4050; }
 
-        /* Scrollable content for account page */
         .account-scroll-area {
             flex: 1;
             overflow-y: auto;
@@ -522,6 +522,7 @@
             background: #3A3E4D;
             border-radius: 4px;
         }
+        /* All other account styles exactly as provided */
         .profile-card {
             background-color: #1C1D26;
             border-radius: 28px;
@@ -698,7 +699,7 @@
         </div>
     </div>
 
-    <!-- ==================== ACCOUNT VIEW (NEW PAGE) ==================== -->
+    <!-- ==================== ACCOUNT VIEW (EXACT PAGE PROVIDED, WITH X BUTTON) ==================== -->
     <div class="account-view" id="accountView">
         <div class="account-header">
             <h1>Account</h1>
@@ -758,7 +759,7 @@
         const profileAvatar = document.getElementById('profileAvatarBtn');
         const closeAccountBtn = document.getElementById('closeAccountBtn');
 
-        // Inbox scroll functionality
+        // Inbox scroll functionality (unchanged)
         const messagesContainer = document.getElementById('messageList');
         const scrollBtn = document.getElementById('scrollTopBtn');
         const fabNewChat = document.getElementById('fabNewChat');
@@ -780,7 +781,7 @@
             setTimeout(checkScrollVisibility, 100);
         }
         
-        // Conversation click handlers
+        // Conversation click handlers (unchanged)
         document.querySelectorAll('.conversation').forEach(conv => {
             conv.addEventListener('click', (e) => {
                 const nameSpan = conv.querySelector('.contact-name');
@@ -953,32 +954,23 @@
             if (accountScroll) accountScroll.scrollTop = 0;
         }
 
-        // Event listeners for navigation
+        // Event listeners: profile icon opens account, X button closes it
         if (searchIcon) searchIcon.addEventListener('click', showSearchView);
         if (searchViewBack) searchViewBack.addEventListener('click', showInboxView);
         if (profileAvatar) {
             profileAvatar.addEventListener('click', (e) => {
-                console.log('👤 Profile avatar clicked → open account page');
+                console.log('👤 Profile avatar clicked → show account page');
                 profileAvatar.style.backgroundColor = '#3C4050';
                 setTimeout(() => profileAvatar.style.backgroundColor = '#2B2D36', 150);
-                showAccountView();
+                showAccountView(); // clears everything and shows the account page
             });
         }
         if (closeAccountBtn) {
             closeAccountBtn.addEventListener('click', () => {
-                console.log('❌ Close account view → back to inbox');
+                console.log('❌ X button clicked → back to messages');
                 showInboxView();
             });
         }
-
-        // Additional tap effect for settings items (optional)
-        document.querySelectorAll('.settings-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                console.log(`⚙️ Settings tapped: ${item.querySelector('.settings-text')?.innerText}`);
-                item.style.backgroundColor = '#2A2D38';
-                setTimeout(() => item.style.backgroundColor = '', 120);
-            });
-        });
 
         const unifiedDiv = document.querySelector('.unified-search');
         if (unifiedDiv && searchInput) {
@@ -990,7 +982,7 @@
         // Start with inbox visible
         showInboxView();
         
-        console.log('Static page: body/HTML locked, no global scroll. Independent scroll areas. Account page integrated with X button.');
+        console.log('Merged: Profile icon opens exact account page with X button to return. Everything else unchanged.');
     })();
 </script>
 </body>
