@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Google Messages · Unified Inbox & Profile</title>
+    <title>Google Messages · Inbox & Search</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -17,8 +17,8 @@
         html, body {
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            position: fixed;
+            overflow: hidden; /* Completely prevents body from scrolling */
+            position: fixed; /* Locks the viewport in place */
             top: 0;
             left: 0;
             right: 0;
@@ -36,9 +36,9 @@
             flex-direction: column;
             width: 100%;
             height: 100vh;
-            height: 100dvh;
+            height: 100dvh; /* Dynamic viewport for mobile */
             background-color: #121217;
-            overflow: hidden;
+            overflow: hidden; /* Prevents any root scrolling */
             position: relative;
         }
 
@@ -48,8 +48,8 @@
             flex-direction: column;
             flex: 1;
             width: 100%;
-            overflow: hidden;
-            min-height: 0;
+            overflow: hidden; /* Contains scrolling internally */
+            min-height: 0; /* Flex limitation fix */
         }
 
         /* Fixed header for inbox — never scrolls */
@@ -100,7 +100,7 @@
             cursor: pointer;
         }
 
-        /* Scrollable messages list */
+        /* Scrollable messages list - independent scrolling, with bounce prevention */
         .messages-list {
             flex: 1;
             overflow-y: auto;
@@ -109,6 +109,7 @@
             scroll-behavior: smooth;
             scrollbar-width: thin;
             -webkit-overflow-scrolling: touch;
+            /* Prevent scroll chaining - stops body from moving when list reaches end */
             overscroll-behavior: contain;
         }
         .messages-list::-webkit-scrollbar {
@@ -202,7 +203,7 @@
             white-space: nowrap;
         }
 
-        /* Scroll to top button */
+        /* Scroll to top button - fixed position relative to viewport */
         .scroll-top-wrapper {
             position: fixed;
             bottom: 80px;
@@ -237,7 +238,7 @@
         }
         .scroll-top-btn i { font-size: 24px; color: #CFD4E6; }
 
-        /* FAB new chat */
+        /* FAB new chat - fixed position */
         .fab-message {
             position: fixed;
             bottom: 24px;
@@ -266,6 +267,7 @@
             min-height: 0;
         }
 
+        /* Fixed search section */
         .search-section {
             position: relative;
             padding: 20px 20px 12px 20px;
@@ -307,6 +309,7 @@
             color: #8E93A8;
         }
 
+        /* Scrollable content wrapper for search view - independent scrolling with overscroll containment */
         .categories-wrapper {
             flex: 1;
             overflow-y: auto;
@@ -314,7 +317,7 @@
             padding: 12px 20px 24px 20px;
             scrollbar-width: thin;
             -webkit-overflow-scrolling: touch;
-            overscroll-behavior: contain;
+            overscroll-behavior: contain; /* Prevents scroll chaining to body */
         }
         .categories-wrapper::-webkit-scrollbar {
             width: 4px;
@@ -456,8 +459,8 @@
             font-size: 15px;
         }
 
-        /* ========= PROFILE VIEW (NEW) ========= */
-        .profile-view {
+        /* ========= ACCOUNT PAGE (NEW) ========= */
+        .account-view {
             display: none;
             flex-direction: column;
             flex: 1;
@@ -466,9 +469,9 @@
             overflow: hidden;
             min-height: 0;
         }
-
-        /* Profile header with close button (X) */
-        .profile-header {
+        /* Account header: same style as main-header but with X button on far right */
+        .account-header {
+            position: relative;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -476,141 +479,130 @@
             background-color: #121217;
             border-bottom: 0.5px solid rgba(255,255,255,0.06);
             flex-shrink: 0;
+            z-index: 10;
         }
-        .profile-header h2 {
-            font-size: 22px;
+        .account-header h1 {
+            font-size: 24px;
             font-weight: 500;
+            letter-spacing: -0.3px;
             color: #E9EDF2;
-            letter-spacing: -0.2px;
         }
-        .close-profile-btn {
-            background: none;
-            border: none;
-            font-size: 26px;
+        .close-account-btn {
+            font-size: 22px;
             color: #C3C9E0;
             cursor: pointer;
-            padding: 6px;
+            transition: opacity 0.2s;
+            width: 34px;
+            height: 34px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.2s;
+            border-radius: 50%;
+            background-color: #2B2D36;
         }
-        .close-profile-btn:active {
-            opacity: 0.6;
-        }
+        .close-account-btn:active { opacity: 0.6; background-color: #3C4050; }
 
-        /* Scrollable profile content */
-        .profile-scroll {
+        /* Scrollable content for account page */
+        .account-scroll-area {
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 20px 20px 40px 20px;
+            padding: 20px;
             scrollbar-width: thin;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
         }
-        .profile-scroll::-webkit-scrollbar {
+        .account-scroll-area::-webkit-scrollbar {
             width: 4px;
         }
-        .profile-scroll::-webkit-scrollbar-track {
+        .account-scroll-area::-webkit-scrollbar-track {
             background: #1E1F28;
         }
-        .profile-scroll::-webkit-scrollbar-thumb {
+        .account-scroll-area::-webkit-scrollbar-thumb {
             background: #3A3E4D;
             border-radius: 4px;
         }
-
-        /* Profile specific card styles (identical to original design but fresh) */
         .profile-card {
             background-color: #1C1D26;
-            border-radius: 24px;
+            border-radius: 28px;
+            padding: 24px 20px;
             margin-bottom: 24px;
-            overflow: hidden;
-            transition: all 0.15s;
-        }
-        .profile-header-avatar {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 28px 20px 20px;
-            background: linear-gradient(145deg, #1A1B24, #13141C);
+            text-align: center;
         }
         .big-avatar {
             width: 96px;
             height: 96px;
-            background-color: #2D7A4B;
+            background-color: #2B2D36;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 44px;
+            font-size: 40px;
             font-weight: 500;
-            color: white;
+            color: #BDC1D0;
             margin-bottom: 16px;
-            box-shadow: 0 8px 18px rgba(0,0,0,0.3);
         }
-        .profile-display-name {
-            font-size: 24px;
-            font-weight: 540;
+        .profile-name {
+            font-size: 22px;
+            font-weight: 500;
             color: #F0F2F8;
             margin-bottom: 6px;
         }
         .profile-email {
             font-size: 14px;
             color: #A5A9B8;
-            margin-bottom: 4px;
+            margin-bottom: 20px;
         }
-        .profile-phone {
-            font-size: 14px;
-            color: #898E9E;
-        }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 16px 20px;
-            border-bottom: 0.5px solid rgba(255,255,255,0.05);
+        .settings-section {
             background-color: #1C1D26;
+            border-radius: 24px;
+            padding: 8px 0;
+            margin-bottom: 24px;
         }
-        .info-label {
-            font-size: 15px;
-            color: #A5A9B8;
-        }
-        .info-value {
-            font-size: 15px;
-            font-weight: 500;
-            color: #E9EDF2;
-        }
-        .menu-item {
+        .settings-item {
             display: flex;
             align-items: center;
-            gap: 16px;
             padding: 16px 20px;
-            border-bottom: 0.5px solid rgba(255,255,255,0.05);
+            gap: 16px;
             cursor: pointer;
+            border-bottom: 0.5px solid rgba(255,255,255,0.05);
             transition: background 0.12s;
         }
-        .menu-item:active {
-            background-color: #2A2D38;
+        .settings-item:active { background-color: #2A2D38; }
+        .settings-item:last-child { border-bottom: none; }
+        .settings-icon {
+            width: 32px;
+            font-size: 20px;
+            color: #BAC0DC;
         }
-        .menu-icon {
-            width: 28px;
-            font-size: 18px;
-            color: #70B9FF;
-        }
-        .menu-text {
+        .settings-text {
             flex: 1;
             font-size: 16px;
+            font-weight: 500;
             color: #F0F2F8;
         }
-        .menu-chevron {
+        .settings-sub {
+            font-size: 13px;
             color: #898E9E;
+        }
+        .chevron-icon {
+            color: #6E7388;
             font-size: 14px;
+        }
+        .version-text {
+            text-align: center;
+            font-size: 12px;
+            color: #5A5F75;
+            margin-top: 32px;
+            padding-bottom: 20px;
         }
 
         /* Responsive adjustments */
         @media (max-width: 480px) {
-            .main-header, .profile-header {
+            .main-header {
                 padding: 14px 16px 10px 16px;
             }
             .conversation {
@@ -632,12 +624,16 @@
             .categories-wrapper {
                 padding: 12px 16px 20px 16px;
             }
-            .profile-scroll {
+            .account-header {
+                padding: 14px 16px 10px 16px;
+            }
+            .account-scroll-area {
                 padding: 16px;
             }
         }
 
-        .messages-list, .categories-wrapper, .profile-scroll {
+        /* Additional overscroll protection for all scrollable elements */
+        .messages-list, .categories-wrapper, .account-scroll-area {
             overscroll-behavior-y: contain;
         }
     </style>
@@ -655,6 +651,7 @@
         </div>
 
         <div class="messages-list" id="messageList">
+            <!-- Message conversations - sufficient content to demonstrate scrolling -->
             <div class="conversation"><div class="avatar" style="background-color:#1E3A3F;">S</div><div class="conv-details"><div class="top-line"><span class="contact-name">SAFARICOM</span><span class="timestamp">7 min</span></div><div class="message-preview"><span class="preview-text">Send money with confidence! M-PESA App shows the recipient’s name for confirming to avoid sending to wrong n...</span><span class="badge-count">48</span></div></div></div>
             <div class="conversation"><div class="avatar" style="background-color:#2C553B;">M</div><div class="conv-details"><div class="top-line"><span class="contact-name">MPESA</span><span class="timestamp">21 min</span></div><div class="message-preview"><span class="preview-text">UDDB70T59V Confirmed. Ksh155.00 sent to JANE KAMANDE 0708032581 on 13/4/26 at 9:11 PM. New M-PES...</span><span class="badge-count">4</span></div></div></div>
             <div class="conversation"><div class="avatar" style="background-color:#5E4A35;">O</div><div class="conv-details"><div class="top-line"><span class="contact-name">OKOA JAHAZI</span><span class="timestamp">16:06</span></div><div class="message-preview"><span class="preview-text">Dear Customer, you have an Okoa Jahazi debt of Sh.33 as at 12.04.26. To access your okoa jahazi statement, dial *131*0#</span><span class="badge-count">17</span></div></div></div>
@@ -701,66 +698,65 @@
         </div>
     </div>
 
-    <!-- ==================== PROFILE VIEW (NEW) ==================== -->
-    <div class="profile-view" id="profileView">
-        <div class="profile-header">
-            <h2>Account</h2>
-            <button class="close-profile-btn" id="closeProfileBtn"><i class="fas fa-times"></i></button>
+    <!-- ==================== ACCOUNT VIEW (NEW PAGE) ==================== -->
+    <div class="account-view" id="accountView">
+        <div class="account-header">
+            <h1>Account</h1>
+            <div class="close-account-btn" id="closeAccountBtn"><i class="fas fa-times"></i></div>
         </div>
-        <div class="profile-scroll">
+        <div class="account-scroll-area">
             <div class="profile-card">
-                <div class="profile-header-avatar">
-                    <div class="big-avatar">G</div>
-                    <div class="profile-display-name">Guest User</div>
-                    <div class="profile-email">guest@googlemessages.com</div>
-                    <div class="profile-phone">+254 700 123 456</div>
+                <div class="big-avatar">G</div>
+                <div class="profile-name">Guest User</div>
+                <div class="profile-email">guest@googlemessages.com</div>
+            </div>
+            <div class="settings-section">
+                <div class="settings-item">
+                    <div class="settings-icon"><i class="fas fa-user-circle"></i></div>
+                    <div class="settings-text">Google Account</div>
+                    <i class="fas fa-chevron-right chevron-icon"></i>
                 </div>
-                <div class="info-row">
-                    <span class="info-label">Google Account</span>
-                    <span class="info-value">guest@gmail.com</span>
+                <div class="settings-item">
+                    <div class="settings-icon"><i class="fas fa-lock"></i></div>
+                    <div class="settings-text">Privacy & Security</div>
+                    <i class="fas fa-chevron-right chevron-icon"></i>
                 </div>
-                <div class="info-row">
-                    <span class="info-label">Messages storage</span>
-                    <span class="info-value">1.2 GB used</span>
+                <div class="settings-item">
+                    <div class="settings-icon"><i class="fas fa-bell"></i></div>
+                    <div class="settings-text">Notifications</div>
+                    <i class="fas fa-chevron-right chevron-icon"></i>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-icon"><i class="fas fa-palette"></i></div>
+                    <div class="settings-text">Theme</div>
+                    <i class="fas fa-chevron-right chevron-icon"></i>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-icon"><i class="fas fa-database"></i></div>
+                    <div class="settings-text">Storage & Data</div>
+                    <i class="fas fa-chevron-right chevron-icon"></i>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-icon"><i class="fas fa-question-circle"></i></div>
+                    <div class="settings-text">Help & Feedback</div>
+                    <i class="fas fa-chevron-right chevron-icon"></i>
                 </div>
             </div>
-
-            <div class="profile-card">
-                <div class="menu-item" id="profileSettingsItem">
-                    <div class="menu-icon"><i class="fas fa-cog"></i></div>
-                    <div class="menu-text">Settings & privacy</div>
-                    <div class="menu-chevron"><i class="fas fa-chevron-right"></i></div>
-                </div>
-                <div class="menu-item" id="profileHelpItem">
-                    <div class="menu-icon"><i class="fas fa-life-ring"></i></div>
-                    <div class="menu-text">Help & feedback</div>
-                    <div class="menu-chevron"><i class="fas fa-chevron-right"></i></div>
-                </div>
-                <div class="menu-item" id="profileAboutItem">
-                    <div class="menu-icon"><i class="fas fa-info-circle"></i></div>
-                    <div class="menu-text">About Google Messages</div>
-                    <div class="menu-chevron"><i class="fas fa-chevron-right"></i></div>
-                </div>
-                <div class="menu-item" id="profileSignOutItem">
-                    <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
-                    <div class="menu-text">Sign out</div>
-                </div>
-            </div>
-            <div style="height: 12px;"></div>
+            <div class="version-text">Google Messages · Version 2026.04.14</div>
         </div>
     </div>
 </div>
 
 <script>
     (function() {
-        // DOM elements for views
+        // DOM elements for toggling views
         const inboxView = document.getElementById('inboxView');
         const searchView = document.getElementById('searchView');
-        const profileView = document.getElementById('profileView');
+        const accountView = document.getElementById('accountView');
         const searchIcon = document.getElementById('searchIconBtn');
         const searchViewBack = document.getElementById('searchViewBackBtn');
         const profileAvatar = document.getElementById('profileAvatarBtn');
-        const closeProfileBtn = document.getElementById('closeProfileBtn');
+        const closeAccountBtn = document.getElementById('closeAccountBtn');
 
         // Inbox scroll functionality
         const messagesContainer = document.getElementById('messageList');
@@ -812,7 +808,7 @@
             });
         }
 
-        // Search functionality (identical from original, keeping fully functional)
+        // Search functionality (exactly as original, untouched)
         const searchInput = document.getElementById('searchInput');
         const dynamicArea = document.getElementById('dynamicArea');
         const originalCardsHTML = document.getElementById('cardsGrid')?.innerHTML || '';
@@ -925,23 +921,20 @@
                 debounceTimer = setTimeout(() => renderSearchResults(e.target.value), 150);
             });
         }
+
         reattachCardListeners();
 
-        // View switching logic
-        function hideAllViews() {
-            inboxView.style.display = 'none';
-            searchView.style.display = 'none';
-            if (profileView) profileView.style.display = 'none';
-        }
-        
+        // View control functions
         function showInboxView() {
-            hideAllViews();
+            searchView.style.display = 'none';
+            accountView.style.display = 'none';
             inboxView.style.display = 'flex';
             setTimeout(checkScrollVisibility, 50);
         }
-        
+
         function showSearchView() {
-            hideAllViews();
+            inboxView.style.display = 'none';
+            accountView.style.display = 'none';
             searchView.style.display = 'flex';
             if (searchInput) {
                 searchInput.value = '';
@@ -951,54 +944,53 @@
             const wrapper = document.querySelector('.categories-wrapper');
             if (wrapper) wrapper.scrollTop = 0;
         }
-        
-        function showProfileView() {
-            hideAllViews();
-            profileView.style.display = 'flex';
-            // Reset scroll position in profile view
-            const profileScroll = document.querySelector('.profile-scroll');
-            if (profileScroll) profileScroll.scrollTop = 0;
+
+        function showAccountView() {
+            inboxView.style.display = 'none';
+            searchView.style.display = 'none';
+            accountView.style.display = 'flex';
+            const accountScroll = document.querySelector('.account-scroll-area');
+            if (accountScroll) accountScroll.scrollTop = 0;
         }
-        
-        // Attach event listeners
+
+        // Event listeners for navigation
         if (searchIcon) searchIcon.addEventListener('click', showSearchView);
         if (searchViewBack) searchViewBack.addEventListener('click', showInboxView);
         if (profileAvatar) {
             profileAvatar.addEventListener('click', (e) => {
-                console.log('👤 Profile avatar clicked — opening profile view');
+                console.log('👤 Profile avatar clicked → open account page');
                 profileAvatar.style.backgroundColor = '#3C4050';
                 setTimeout(() => profileAvatar.style.backgroundColor = '#2B2D36', 150);
-                showProfileView();
+                showAccountView();
             });
         }
-        if (closeProfileBtn) {
-            closeProfileBtn.addEventListener('click', () => {
-                console.log('❌ Closing profile view, back to inbox');
+        if (closeAccountBtn) {
+            closeAccountBtn.addEventListener('click', () => {
+                console.log('❌ Close account view → back to inbox');
                 showInboxView();
             });
         }
-        
-        // Profile menu item interactions (console logs, keep aesthetic)
-        const settingsItem = document.getElementById('profileSettingsItem');
-        const helpItem = document.getElementById('profileHelpItem');
-        const aboutItem = document.getElementById('profileAboutItem');
-        const signOutItem = document.getElementById('profileSignOutItem');
-        
-        if (settingsItem) settingsItem.addEventListener('click', () => console.log('⚙️ Settings & privacy clicked'));
-        if (helpItem) helpItem.addEventListener('click', () => console.log('🆘 Help & feedback clicked'));
-        if (aboutItem) aboutItem.addEventListener('click', () => console.log('ℹ️ About Google Messages clicked'));
-        if (signOutItem) signOutItem.addEventListener('click', () => console.log('🚪 Sign out clicked — demo action'));
-        
+
+        // Additional tap effect for settings items (optional)
+        document.querySelectorAll('.settings-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                console.log(`⚙️ Settings tapped: ${item.querySelector('.settings-text')?.innerText}`);
+                item.style.backgroundColor = '#2A2D38';
+                setTimeout(() => item.style.backgroundColor = '', 120);
+            });
+        });
+
         const unifiedDiv = document.querySelector('.unified-search');
         if (unifiedDiv && searchInput) {
             unifiedDiv.addEventListener('click', (e) => { 
                 if (e.target !== searchInput) searchInput.focus(); 
             });
         }
-        
-        // Initial view: inbox
+
+        // Start with inbox visible
         showInboxView();
-        console.log('✅ Fully merged: Profile view with X close button, messages + search unchanged.');
+        
+        console.log('Static page: body/HTML locked, no global scroll. Independent scroll areas. Account page integrated with X button.');
     })();
 </script>
 </body>
