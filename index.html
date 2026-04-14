@@ -88,12 +88,12 @@
             border: 2px solid rgba(255,255,255,0.1);
             transition: all 0.2s;
         }
-        /* VIOLET camera icon */
+        /* GREY camera icon (no violet) */
         .camera-icon {
             position: absolute;
             bottom: 2px;
             right: 2px;
-            background-color: #B77CFF;  /* violet */
+            background-color: #5C6079;  /* neutral grey */
             border-radius: 50%;
             width: 28px;
             height: 28px;
@@ -118,26 +118,26 @@
         
         /* FONT REDUCTION BY ~30% */
         .email-address {
-            font-size: 15px;      /* 22px -> ~15px */
+            font-size: 15px;
             font-weight: 500;
             color: #F0F2F8;
             letter-spacing: -0.2px;
             word-break: break-all;
         }
         .greeting {
-            font-size: 13px;       /* 18px -> ~13px */
+            font-size: 13px;
             font-weight: 500;
             color: #E9EDF2;
             text-align: center;
             margin-bottom: 6px;
         }
 
-        /* COMPACT NAVBAR — appears on scroll, now covers entire top edge, solid background */
+        /* COMPACT NAVBAR — appears on scroll, now covers entire top edge, solid background, CENTERED content */
         .compact-navbar {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            background-color: #121217;  /* solid, no blur */
+            justify-content: center;   /* CENTER the avatar + email group */
+            background-color: #121217;
             padding: 12px 20px;
             position: fixed;
             top: 0;
@@ -162,6 +162,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            margin: 0; /* ensure no extra offset */
         }
         .compact-avatar {
             width: 38px;
@@ -192,11 +193,11 @@
             transition: margin-top 0.2s;
         }
 
-        /* ALL CARDS WIDTH REDUCTION BY 20% (centered) */
+        /* CARDS: make longer horizontally by 20% (from 80% to 96%) */
         .menu-card {
             background-color: #1C1D26;
             border-radius: 24px;
-            width: 80%;           /* reduced by 20% */
+            width: 96%;           /* increased by 20% relative to previous 80% → 96% */
             margin-left: auto;
             margin-right: auto;
             margin-bottom: 14px;
@@ -204,11 +205,11 @@
             border: 0.5px solid rgba(255,255,255,0.04);
         }
 
-        /* MANAGE ACCOUNT CARD: additional 40% length reduction (final width 60%) */
+        /* MANAGE ACCOUNT CARD: remains exactly as original (60% width, unchanged) */
         .manage-card-centered {
             background-color: #1C1D26;
             border-radius: 30px;
-            width: 60%;            /* reduced by 40% */
+            width: 60%;            /* unchanged — as requested */
             margin-left: auto;
             margin-right: auto;
             padding: 14px 18px;
@@ -218,11 +219,11 @@
             margin-bottom: 14px;
             border: 0.5px solid rgba(255,255,255,0.04);
         }
-        /* VIOLET text for "Manage your Google Account" */
+        /* BLUE accent for "Manage your Google Account" (previously violet) */
         .manage-text {
             font-size: 13px;
             font-weight: 500;
-            color: #B77CFF;        /* violet */
+            color: #4B73FF;        /* fresh blue, part of blue/dark blue scheme */
         }
 
         .menu-item {
@@ -264,9 +265,9 @@
             align-items: center;
             gap: 10px;
         }
-        /* VIOLET badge background */
+        /* BLUE badge background (violet replaced with blue) */
         .account-count-badge {
-            background-color: #B77CFF;   /* violet */
+            background-color: #4B73FF;   /* blue, part of blue/dark blue palette */
             color: #121212;
             font-size: 11px;
             font-weight: 700;
@@ -349,17 +350,18 @@
             color: #8E93AE;
             margin-top: 2px;
         }
-        /* VIOLET info icon */
+        /* BLUE info icon (was violet) */
         .info-icon-dropdown {
-            color: #B77CFF;
+            color: #4B73FF;
             font-size: 14px;
             width: 26px;
             text-align: center;
             opacity: 0.8;
         }
 
+        /* Section header also widened for consistency with cards (96% like .menu-card) */
         .section-header {
-            width: 80%;
+            width: 96%;
             margin: 16px auto 10px auto;
             padding-left: 6px;
         }
@@ -379,7 +381,6 @@
             font-size: 10px;
             color: #8E93AE;
         }
-        /* Privacy & Terms in normal text color (no special tint) */
         .footer-links a {
             color: #8E93AE;
             text-decoration: none;
@@ -412,8 +413,9 @@
             .compact-navbar {
                 padding: 10px 16px;
             }
+            /* On smaller screens, keep the wider cards but slightly reduced to avoid edge clipping */
             .menu-card, .section-header {
-                width: 85%;
+                width: 94%;
             }
             .manage-card-centered {
                 width: 70%;
@@ -441,7 +443,7 @@
         </div>
     </div>
 
-    <!-- Compact navbar: now fixed at very top, solid background, covers edge to edge -->
+    <!-- Compact navbar: now fixed at top, solid background, and CONTENT CENTERED (avatar + email) -->
     <div class="compact-navbar" id="compactNavbar">
         <div class="compact-left">
             <div class="compact-avatar">
@@ -665,7 +667,7 @@
                 if (compactNav) {
                     compactNav.classList.add('show');
                 }
-                console.log('[Scroll] Header section removed, navbar fixed at top, no content shows behind.');
+                console.log('[Scroll] Header section removed, navbar fixed at top, content centered.');
             } 
             else if (scrollY <= 25 && isCollapsed) {
                 isCollapsed = false;
@@ -701,7 +703,7 @@
         }
         
         // All menu press effects
-        addPressEffect(document.getElementById('manageAccountBtn'), '[Account] Manage your Google Account (violet text)');
+        addPressEffect(document.getElementById('manageAccountBtn'), '[Account] Manage your Google Account (blue accent)');
         addPressEffect(document.getElementById('profileBtn'), '[Account] Your profile');
         addPressEffect(document.getElementById('archivedBtn'), '[Account] Archived');
         addPressEffect(document.getElementById('trashBtn'), '[Account] Trash');
@@ -712,7 +714,7 @@
         addPressEffect(document.getElementById('messagesSettingsBtn'), '[Account] Messages settings');
         addPressEffect(document.getElementById('helpFeedbackBtn'), '[Account] Help and feedback');
         
-        // Profile picture & camera interactions
+        // Profile picture & camera interactions (camera icon now grey)
         const profilePicWrapperDiv = document.getElementById('profilePicWrapper');
         const cameraBtn = document.getElementById('cameraIcon');
         if (profilePicWrapperDiv) {
@@ -726,7 +728,7 @@
         if (cameraBtn) {
             cameraBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                console.log('[Camera] Change profile picture clicked — open image picker');
+                console.log('[Camera] Change profile picture clicked — open image picker (grey icon)');
                 cameraBtn.style.transform = 'scale(0.9)';
                 setTimeout(() => cameraBtn.style.transform = '', 150);
             });
@@ -748,7 +750,7 @@
             });
         }
         
-        console.log('Final UI: Navbar now covers top edge fully (solid background, no gaps). Violet accents applied. Fonts reduced, cards narrower.');
+        console.log('Final UI: Cards widened horizontally by 20% (now 96% width). Manage account card unchanged (60%). Violet replaced with blue/dark blue (#4B73FF). Camera icon now grey. Navbar centered when scrolling.');
     })();
 </script>
 </body>
