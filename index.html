@@ -24,7 +24,7 @@
             height: 100vh;
         }
 
-        /* main container: fixed height, scroll only when content overflows (dropdown expanded) */
+        /* main container: fixed height, scroll only when content overflows */
         .account-container {
             width: 100%;
             max-width: 460px;
@@ -47,25 +47,23 @@
             border-radius: 10px;
         }
 
-        /* FIXED HEADER: sticky at top, but its contents can be hidden on scroll */
+        /* FIXED HEADER AREA - collapses to zero height on scroll */
         .fixed-header-area {
             position: sticky;
             top: 0;
             background-color: #121217;
             z-index: 20;
             padding: 20px 20px 12px 20px;
-            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: padding 0.2s ease;
+            width: 100%;
         }
 
-        /* Header inner wrapper for collapse animation */
+        /* Header inner wrapper - completely removed from layout when collapsed */
         .header-content {
-            transition: opacity 0.2s ease, transform 0.2s ease;
+            transition: opacity 0.2s ease;
         }
         .header-content.collapsed {
-            opacity: 0;
-            transform: translateY(-10px);
-            pointer-events: none;
-            visibility: hidden;
+            display: none;  /* no empty space, removed from flow */
         }
 
         /* SMALLER PROFILE CIRCLE */
@@ -90,11 +88,12 @@
             border: 2px solid rgba(255,255,255,0.1);
             transition: all 0.2s;
         }
+        /* VIOLET camera icon */
         .camera-icon {
             position: absolute;
             bottom: 2px;
             right: 2px;
-            background-color: #70B9FF;
+            background-color: #B77CFF;  /* violet */
             border-radius: 50%;
             width: 28px;
             height: 28px;
@@ -116,48 +115,47 @@
             margin-bottom: 10px;
             width: 100%;
         }
+        
+        /* FONT REDUCTION BY ~30% */
         .email-address {
-            font-size: 22px;
+            font-size: 15px;      /* 22px -> ~15px */
             font-weight: 500;
             color: #F0F2F8;
-            letter-spacing: -0.3px;
+            letter-spacing: -0.2px;
             word-break: break-all;
         }
         .greeting {
-            font-size: 18px;
+            font-size: 13px;       /* 18px -> ~13px */
             font-weight: 500;
             color: #E9EDF2;
             text-align: center;
             margin-bottom: 6px;
         }
 
-        /* COMPACT NAVBAR — appears on scroll, shows profile pic + email on left, no dropdown icon */
+        /* COMPACT NAVBAR — appears on scroll, now covers entire top edge, solid background */
         .compact-navbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: rgba(18, 18, 23, 0.96);
-            backdrop-filter: blur(12px);
-            padding: 8px 16px;
-            border-radius: 40px;
+            background-color: #121217;  /* solid, no blur */
+            padding: 12px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            max-width: 100%;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.2s;
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-5px);
-            width: calc(100% - 32px);
-            max-width: 420px;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
             pointer-events: none;
             z-index: 30;
-            border: 0.5px solid rgba(255,255,255,0.08);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border-bottom: 0.5px solid rgba(255,255,255,0.08);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.4);
         }
         .compact-navbar.show {
             opacity: 1;
             visibility: visible;
-            transform: translateX(-50%) translateY(0);
             pointer-events: auto;
         }
         .compact-left {
@@ -173,12 +171,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 20px;
             color: #BDC1D0;
             border: 1px solid rgba(255,255,255,0.15);
         }
         .compact-email {
-            font-size: 15px;
+            font-size: 12px;
             font-weight: 500;
             color: #F0F2F8;
             white-space: nowrap;
@@ -186,7 +184,6 @@
             text-overflow: ellipsis;
             max-width: 210px;
         }
-        /* No dropdown icon on navbar — removed */
 
         /* scrollable content area */
         .scrollable-content {
@@ -195,21 +192,44 @@
             transition: margin-top 0.2s;
         }
 
-        /* menu cards */
+        /* ALL CARDS WIDTH REDUCTION BY 20% (centered) */
         .menu-card {
             background-color: #1C1D26;
             border-radius: 24px;
-            width: 100%;
+            width: 80%;           /* reduced by 20% */
+            margin-left: auto;
+            margin-right: auto;
             margin-bottom: 14px;
             overflow: hidden;
             border: 0.5px solid rgba(255,255,255,0.04);
+        }
+
+        /* MANAGE ACCOUNT CARD: additional 40% length reduction (final width 60%) */
+        .manage-card-centered {
+            background-color: #1C1D26;
+            border-radius: 30px;
+            width: 60%;            /* reduced by 40% */
+            margin-left: auto;
+            margin-right: auto;
+            padding: 14px 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.12s;
+            margin-bottom: 14px;
+            border: 0.5px solid rgba(255,255,255,0.04);
+        }
+        /* VIOLET text for "Manage your Google Account" */
+        .manage-text {
+            font-size: 13px;
+            font-weight: 500;
+            color: #B77CFF;        /* violet */
         }
 
         .menu-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 14px 18px;
+            padding: 12px 16px;
             cursor: pointer;
             transition: background 0.12s;
             border-bottom: 0.5px solid rgba(255,255,255,0.05);
@@ -220,50 +240,51 @@
         .menu-item-left {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
         }
         .menu-icon {
-            width: 28px;
-            font-size: 20px;
+            width: 26px;
+            font-size: 18px;
             color: #BAC0DC;
             text-align: center;
         }
         .menu-label {
-            font-size: 16px;
+            font-size: 12px;
             font-weight: 500;
             color: #F0F2F8;
             letter-spacing: -0.2px;
         }
 
-        /* Switch account card */
+        /* Switch account specific */
         .switch-left-label {
             flex: 1;
         }
         .switch-right-controls {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
+        /* VIOLET badge background */
         .account-count-badge {
-            background-color: #3C3F52;
-            color: white;
-            font-size: 13px;
-            font-weight: 600;
+            background-color: #B77CFF;   /* violet */
+            color: #121212;
+            font-size: 11px;
+            font-weight: 700;
             border-radius: 40px;
-            min-width: 32px;
-            height: 32px;
+            min-width: 30px;
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 10px;
+            padding: 0 8px;
             font-family: monospace;
         }
         .dropdown-chevron {
-            font-size: 18px;
+            font-size: 16px;
             color: #A5A9C2;
             transition: transform 0.2s;
             cursor: pointer;
-            width: 28px;
+            width: 26px;
             text-align: center;
         }
         .dropdown-chevron.rotated {
@@ -287,7 +308,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 18px;
+            padding: 10px 16px;
             border-top: 0.5px solid rgba(255,255,255,0.05);
             cursor: pointer;
             transition: background 0.1s;
@@ -298,18 +319,18 @@
         .dropdown-account-info {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             flex: 1;
         }
         .dropdown-avatar {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             background-color: #3C3F52;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             color: #CFD4E6;
             flex-shrink: 0;
@@ -319,47 +340,31 @@
             flex-direction: column;
         }
         .dropdown-username {
-            font-size: 15px;
+            font-size: 12px;
             font-weight: 500;
             color: #F0F2F8;
         }
         .dropdown-email-small {
-            font-size: 11px;
+            font-size: 9px;
             color: #8E93AE;
             margin-top: 2px;
         }
+        /* VIOLET info icon */
         .info-icon-dropdown {
-            color: #70B9FF;
-            font-size: 16px;
-            width: 28px;
+            color: #B77CFF;
+            font-size: 14px;
+            width: 26px;
             text-align: center;
             opacity: 0.8;
         }
 
-        .manage-card-centered {
-            background-color: #1C1D26;
-            border-radius: 30px;
-            width: 100%;
-            padding: 14px 18px;
-            text-align: center;
-            cursor: pointer;
-            transition: background 0.12s;
-            margin-bottom: 14px;
-            border: 0.5px solid rgba(255,255,255,0.04);
-        }
-        .manage-text {
-            font-size: 16px;
-            font-weight: 500;
-            color: #F0F2F8;
-        }
-
         .section-header {
-            width: 100%;
-            margin: 16px 0 10px 0;
+            width: 80%;
+            margin: 16px auto 10px auto;
             padding-left: 6px;
         }
         .section-title {
-            font-size: 13px;
+            font-size: 10px;
             font-weight: 600;
             color: #A5A9C2;
             text-transform: uppercase;
@@ -371,19 +376,23 @@
             margin-top: 28px;
             text-align: center;
             padding: 12px 0 20px;
-            font-size: 12px;
+            font-size: 10px;
             color: #8E93AE;
         }
+        /* Privacy & Terms in normal text color (no special tint) */
         .footer-links a {
-            color: #8E9AFF;
+            color: #8E93AE;
             text-decoration: none;
             font-weight: 500;
             margin: 0 6px;
         }
+        .footer-links a:active {
+            opacity: 0.7;
+        }
 
         @media (max-width: 480px) {
             .fixed-header-area {
-                padding: 16px 16px 10px 16px;
+                padding: 12px 16px 8px 16px;
             }
             .scrollable-content {
                 padding: 0 12px 32px 12px;
@@ -398,17 +407,23 @@
                 font-size: 38px;
             }
             .email-address {
-                font-size: 20px;
+                font-size: 14px;
             }
             .compact-navbar {
-                width: calc(100% - 24px);
+                padding: 10px 16px;
+            }
+            .menu-card, .section-header {
+                width: 85%;
+            }
+            .manage-card-centered {
+                width: 70%;
             }
         }
     </style>
 </head>
 <body>
 <div class="account-container" id="accountContainer">
-    <!-- Fixed header area: the whole header content will be hidden on scroll (collapsed) -->
+    <!-- Fixed header area: entire top section collapses to zero height on scroll -->
     <div class="fixed-header-area" id="fixedHeaderArea">
         <div class="header-content" id="headerContent">
             <div class="email-header">
@@ -426,7 +441,7 @@
         </div>
     </div>
 
-    <!-- Compact navbar (appears on scroll) with profile pic + email on left side, NO dropdown icon -->
+    <!-- Compact navbar: now fixed at very top, solid background, covers edge to edge -->
     <div class="compact-navbar" id="compactNavbar">
         <div class="compact-left">
             <div class="compact-avatar">
@@ -434,7 +449,6 @@
             </div>
             <div class="compact-email" id="compactEmail">hochieng86@gmail.com</div>
         </div>
-        <!-- No extra icon / dropdown on navbar -->
     </div>
 
     <!-- Scrollable content area -->
@@ -624,7 +638,7 @@
             });
         }
         
-        // ========== SCROLL LOGIC: On scroll, header content completely disappears, navbar appears ==========
+        // ========== SCROLL LOGIC: header content removed completely (display:none) when scrolled down ==========
         const headerContent = document.getElementById('headerContent');
         const compactNav = document.getElementById('compactNavbar');
         const fixedHeaderArea = document.getElementById('fixedHeaderArea');
@@ -635,38 +649,40 @@
         function handleScroll() {
             if (!scrollContainer) return;
             const scrollY = scrollContainer.scrollTop;
-            // threshold: when scrolled down more than 25px, collapse header completely
+            // threshold: when scrolled down more than 25px, collapse header completely (remove from layout)
             if (scrollY > 25 && !isCollapsed) {
                 isCollapsed = true;
-                // Hide header content completely (opacity 0, invisible, removed from layout flow)
+                // Completely remove header content from document flow
                 if (headerContent) {
-                    headerContent.classList.add('collapsed');
+                    headerContent.classList.add('collapsed');  // triggers display: none
                 }
-                // Reduce header area padding to minimal to save space
+                // Reduce fixed header area padding to zero (no extra space)
                 if (fixedHeaderArea) {
-                    fixedHeaderArea.style.paddingTop = '8px';
-                    fixedHeaderArea.style.paddingBottom = '8px';
+                    fixedHeaderArea.style.paddingTop = '0';
+                    fixedHeaderArea.style.paddingBottom = '0';
                 }
-                // Show compact navbar with profile + email
+                // Show compact navbar (fixed at top, solid background)
                 if (compactNav) {
                     compactNav.classList.add('show');
                 }
-                console.log('[Scroll] Header collapsed, compact navbar shown');
+                console.log('[Scroll] Header section removed, navbar fixed at top, no content shows behind.');
             } 
             else if (scrollY <= 25 && isCollapsed) {
                 isCollapsed = false;
-                // Restore header content
+                // Restore header content visibility and layout
                 if (headerContent) {
                     headerContent.classList.remove('collapsed');
                 }
+                // Restore original header padding
                 if (fixedHeaderArea) {
                     fixedHeaderArea.style.paddingTop = '';
                     fixedHeaderArea.style.paddingBottom = '';
                 }
+                // Hide compact navbar
                 if (compactNav) {
                     compactNav.classList.remove('show');
                 }
-                console.log('[Scroll] Header restored, navbar hidden');
+                console.log('[Scroll] Header restored, navbar hidden.');
             }
         }
         
@@ -678,14 +694,14 @@
             handleScroll();
         }
         
-        // Ensure compact email text matches current email
+        // Ensure compact email text matches
         const compactEmailSpan = document.getElementById('compactEmail');
         if (compactEmailSpan) {
             compactEmailSpan.innerText = 'hochieng86@gmail.com';
         }
         
         // All menu press effects
-        addPressEffect(document.getElementById('manageAccountBtn'), '[Account] Manage your Google Account');
+        addPressEffect(document.getElementById('manageAccountBtn'), '[Account] Manage your Google Account (violet text)');
         addPressEffect(document.getElementById('profileBtn'), '[Account] Your profile');
         addPressEffect(document.getElementById('archivedBtn'), '[Account] Archived');
         addPressEffect(document.getElementById('trashBtn'), '[Account] Trash');
@@ -716,7 +732,7 @@
             });
         }
         
-        // Footer links
+        // Footer links (normal color)
         const privacyLink = document.getElementById('privacyLink');
         const termsLink = document.getElementById('termsLink');
         if (privacyLink) {
@@ -732,9 +748,7 @@
             });
         }
         
-        // Also ensure that when dropdown expands and page scrolls, header collapse works seamlessly.
-        // No extra icons on navbar.
-        console.log('Final: On scroll up, header disappears entirely (profile pic + email + greeting vanish), compact navbar shows profile + email on left with NO dropdown icon. Cards narrower, profile circle smaller.');
+        console.log('Final UI: Navbar now covers top edge fully (solid background, no gaps). Violet accents applied. Fonts reduced, cards narrower.');
     })();
 </script>
 </body>
