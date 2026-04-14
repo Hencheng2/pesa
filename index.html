@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Google Messages · Inbox & Search</title>
+    <title>Google Messages · Unified Inbox & Profile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -17,8 +17,8 @@
         html, body {
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Completely prevents body from scrolling */
-            position: fixed; /* Locks the viewport in place */
+            overflow: hidden;
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
@@ -36,9 +36,9 @@
             flex-direction: column;
             width: 100%;
             height: 100vh;
-            height: 100dvh; /* Dynamic viewport for mobile */
+            height: 100dvh;
             background-color: #121217;
-            overflow: hidden; /* Prevents any root scrolling */
+            overflow: hidden;
             position: relative;
         }
 
@@ -48,8 +48,8 @@
             flex-direction: column;
             flex: 1;
             width: 100%;
-            overflow: hidden; /* Contains scrolling internally */
-            min-height: 0; /* Flex limitation fix */
+            overflow: hidden;
+            min-height: 0;
         }
 
         /* Fixed header for inbox — never scrolls */
@@ -100,7 +100,7 @@
             cursor: pointer;
         }
 
-        /* Scrollable messages list - independent scrolling, with bounce prevention */
+        /* Scrollable messages list */
         .messages-list {
             flex: 1;
             overflow-y: auto;
@@ -109,7 +109,6 @@
             scroll-behavior: smooth;
             scrollbar-width: thin;
             -webkit-overflow-scrolling: touch;
-            /* Prevent scroll chaining - stops body from moving when list reaches end */
             overscroll-behavior: contain;
         }
         .messages-list::-webkit-scrollbar {
@@ -203,7 +202,7 @@
             white-space: nowrap;
         }
 
-        /* Scroll to top button - fixed position relative to viewport */
+        /* Scroll to top button */
         .scroll-top-wrapper {
             position: fixed;
             bottom: 80px;
@@ -238,7 +237,7 @@
         }
         .scroll-top-btn i { font-size: 24px; color: #CFD4E6; }
 
-        /* FAB new chat - fixed position */
+        /* FAB new chat */
         .fab-message {
             position: fixed;
             bottom: 24px;
@@ -267,7 +266,6 @@
             min-height: 0;
         }
 
-        /* Fixed search section */
         .search-section {
             position: relative;
             padding: 20px 20px 12px 20px;
@@ -309,7 +307,6 @@
             color: #8E93A8;
         }
 
-        /* Scrollable content wrapper for search view - independent scrolling with overscroll containment */
         .categories-wrapper {
             flex: 1;
             overflow-y: auto;
@@ -317,7 +314,7 @@
             padding: 12px 20px 24px 20px;
             scrollbar-width: thin;
             -webkit-overflow-scrolling: touch;
-            overscroll-behavior: contain; /* Prevents scroll chaining to body */
+            overscroll-behavior: contain;
         }
         .categories-wrapper::-webkit-scrollbar {
             width: 4px;
@@ -459,7 +456,7 @@
             font-size: 15px;
         }
 
-        /* ========= PROFILE VIEW (CLEAR SLATE) ========= */
+        /* ========= PROFILE VIEW (NEW) ========= */
         .profile-view {
             display: none;
             flex-direction: column;
@@ -470,7 +467,7 @@
             min-height: 0;
         }
 
-        /* Profile header with X button */
+        /* Profile header with close button (X) */
         .profile-header {
             display: flex;
             justify-content: space-between;
@@ -487,149 +484,133 @@
             letter-spacing: -0.2px;
         }
         .close-profile-btn {
-            width: 36px;
-            height: 36px;
+            background: none;
+            border: none;
+            font-size: 26px;
+            color: #C3C9E0;
+            cursor: pointer;
+            padding: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #2B2D36;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .close-profile-btn i {
-            font-size: 18px;
-            color: #C3C9E0;
+            transition: opacity 0.2s;
         }
         .close-profile-btn:active {
-            background-color: #3C4050;
+            opacity: 0.6;
         }
 
         /* Scrollable profile content */
-        .profile-content {
+        .profile-scroll {
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 24px 20px 40px 20px;
+            padding: 20px 20px 40px 20px;
             scrollbar-width: thin;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
         }
-        .profile-content::-webkit-scrollbar {
+        .profile-scroll::-webkit-scrollbar {
             width: 4px;
         }
-        .profile-content::-webkit-scrollbar-track {
+        .profile-scroll::-webkit-scrollbar-track {
             background: #1E1F28;
         }
-        .profile-content::-webkit-scrollbar-thumb {
+        .profile-scroll::-webkit-scrollbar-thumb {
             background: #3A3E4D;
             border-radius: 4px;
         }
 
-        /* Profile card */
+        /* Profile specific card styles (identical to original design but fresh) */
         .profile-card {
             background-color: #1C1D26;
-            border-radius: 28px;
-            padding: 24px 20px;
-            margin-bottom: 20px;
-            text-align: center;
+            border-radius: 24px;
+            margin-bottom: 24px;
+            overflow: hidden;
+            transition: all 0.15s;
         }
-        .profile-big-avatar {
+        .profile-header-avatar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 28px 20px 20px;
+            background: linear-gradient(145deg, #1A1B24, #13141C);
+        }
+        .big-avatar {
             width: 96px;
             height: 96px;
-            background: linear-gradient(145deg, #2B2F3E, #1F212C);
+            background-color: #2D7A4B;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 16px auto;
-            font-size: 42px;
+            font-size: 44px;
             font-weight: 500;
-            color: #BDC1D0;
-            border: 2px solid rgba(112,185,255,0.3);
+            color: white;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.3);
         }
-        .profile-name {
+        .profile-display-name {
             font-size: 24px;
             font-weight: 540;
             color: #F0F2F8;
             margin-bottom: 6px;
         }
         .profile-email {
-            font-size: 15px;
+            font-size: 14px;
             color: #A5A9B8;
-            margin-bottom: 20px;
-            word-break: break-all;
+            margin-bottom: 4px;
         }
-        .profile-stats {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 12px;
-            padding-top: 16px;
-            border-top: 0.5px solid rgba(255,255,255,0.08);
-        }
-        .stat-item {
-            text-align: center;
-        }
-        .stat-number {
-            font-size: 20px;
-            font-weight: 600;
-            color: #70B9FF;
-        }
-        .stat-label {
-            font-size: 12px;
+        .profile-phone {
+            font-size: 14px;
             color: #898E9E;
-            margin-top: 4px;
         }
 
         .info-row {
-            background-color: #1C1D26;
-            border-radius: 18px;
-            padding: 16px 18px;
-            margin-bottom: 12px;
             display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .info-icon {
-            width: 40px;
-            font-size: 20px;
-            color: #70B9FF;
-            text-align: center;
-        }
-        .info-text {
-            flex: 1;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 0.5px solid rgba(255,255,255,0.05);
+            background-color: #1C1D26;
         }
         .info-label {
-            font-size: 13px;
-            color: #898E9E;
-            margin-bottom: 4px;
+            font-size: 15px;
+            color: #A5A9B8;
         }
         .info-value {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 500;
+            color: #E9EDF2;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            border-bottom: 0.5px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: background 0.12s;
+        }
+        .menu-item:active {
+            background-color: #2A2D38;
+        }
+        .menu-icon {
+            width: 28px;
+            font-size: 18px;
+            color: #70B9FF;
+        }
+        .menu-text {
+            flex: 1;
+            font-size: 16px;
             color: #F0F2F8;
         }
-        .signout-btn {
-            background-color: #2B2D36;
-            border-radius: 40px;
-            padding: 14px;
-            text-align: center;
-            margin-top: 24px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .signout-btn:active {
-            background-color: #3C4050;
-        }
-        .signout-btn span {
-            color: #FF8A7A;
-            font-weight: 500;
-            font-size: 16px;
+        .menu-chevron {
+            color: #898E9E;
+            font-size: 14px;
         }
 
         /* Responsive adjustments */
         @media (max-width: 480px) {
-            .main-header {
+            .main-header, .profile-header {
                 padding: 14px 16px 10px 16px;
             }
             .conversation {
@@ -651,16 +632,12 @@
             .categories-wrapper {
                 padding: 12px 16px 20px 16px;
             }
-            .profile-header {
-                padding: 14px 16px 10px 16px;
-            }
-            .profile-content {
-                padding: 20px 16px 32px 16px;
+            .profile-scroll {
+                padding: 16px;
             }
         }
 
-        /* Additional overscroll protection for all scrollable elements */
-        .messages-list, .categories-wrapper, .profile-content {
+        .messages-list, .categories-wrapper, .profile-scroll {
             overscroll-behavior-y: contain;
         }
     </style>
@@ -678,7 +655,6 @@
         </div>
 
         <div class="messages-list" id="messageList">
-            <!-- Message conversations - sufficient content to demonstrate scrolling -->
             <div class="conversation"><div class="avatar" style="background-color:#1E3A3F;">S</div><div class="conv-details"><div class="top-line"><span class="contact-name">SAFARICOM</span><span class="timestamp">7 min</span></div><div class="message-preview"><span class="preview-text">Send money with confidence! M-PESA App shows the recipient’s name for confirming to avoid sending to wrong n...</span><span class="badge-count">48</span></div></div></div>
             <div class="conversation"><div class="avatar" style="background-color:#2C553B;">M</div><div class="conv-details"><div class="top-line"><span class="contact-name">MPESA</span><span class="timestamp">21 min</span></div><div class="message-preview"><span class="preview-text">UDDB70T59V Confirmed. Ksh155.00 sent to JANE KAMANDE 0708032581 on 13/4/26 at 9:11 PM. New M-PES...</span><span class="badge-count">4</span></div></div></div>
             <div class="conversation"><div class="avatar" style="background-color:#5E4A35;">O</div><div class="conv-details"><div class="top-line"><span class="contact-name">OKOA JAHAZI</span><span class="timestamp">16:06</span></div><div class="message-preview"><span class="preview-text">Dear Customer, you have an Okoa Jahazi debt of Sh.33 as at 12.04.26. To access your okoa jahazi statement, dial *131*0#</span><span class="badge-count">17</span></div></div></div>
@@ -725,38 +701,52 @@
         </div>
     </div>
 
-    <!-- ==================== PROFILE VIEW (CLEAR SLATE) ==================== -->
+    <!-- ==================== PROFILE VIEW (NEW) ==================== -->
     <div class="profile-view" id="profileView">
         <div class="profile-header">
             <h2>Account</h2>
-            <div class="close-profile-btn" id="closeProfileBtn"><i class="fas fa-times"></i></div>
+            <button class="close-profile-btn" id="closeProfileBtn"><i class="fas fa-times"></i></button>
         </div>
-        <div class="profile-content">
+        <div class="profile-scroll">
             <div class="profile-card">
-                <div class="profile-big-avatar">G</div>
-                <div class="profile-name">Guest User</div>
-                <div class="profile-email">guest@messages.google.com</div>
-                <div class="profile-stats">
-                    <div class="stat-item"><div class="stat-number">147</div><div class="stat-label">Messages</div></div>
-                    <div class="stat-item"><div class="stat-number">12</div><div class="stat-label">Unread</div></div>
-                    <div class="stat-item"><div class="stat-number">8</div><div class="stat-label">Contacts</div></div>
+                <div class="profile-header-avatar">
+                    <div class="big-avatar">G</div>
+                    <div class="profile-display-name">Guest User</div>
+                    <div class="profile-email">guest@googlemessages.com</div>
+                    <div class="profile-phone">+254 700 123 456</div>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Google Account</span>
+                    <span class="info-value">guest@gmail.com</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Messages storage</span>
+                    <span class="info-value">1.2 GB used</span>
                 </div>
             </div>
-            <div class="info-row">
-                <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
-                <div class="info-text"><div class="info-label">Phone number</div><div class="info-value">+254 7XX XXX 123</div></div>
+
+            <div class="profile-card">
+                <div class="menu-item" id="profileSettingsItem">
+                    <div class="menu-icon"><i class="fas fa-cog"></i></div>
+                    <div class="menu-text">Settings & privacy</div>
+                    <div class="menu-chevron"><i class="fas fa-chevron-right"></i></div>
+                </div>
+                <div class="menu-item" id="profileHelpItem">
+                    <div class="menu-icon"><i class="fas fa-life-ring"></i></div>
+                    <div class="menu-text">Help & feedback</div>
+                    <div class="menu-chevron"><i class="fas fa-chevron-right"></i></div>
+                </div>
+                <div class="menu-item" id="profileAboutItem">
+                    <div class="menu-icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="menu-text">About Google Messages</div>
+                    <div class="menu-chevron"><i class="fas fa-chevron-right"></i></div>
+                </div>
+                <div class="menu-item" id="profileSignOutItem">
+                    <div class="menu-icon"><i class="fas fa-sign-out-alt"></i></div>
+                    <div class="menu-text">Sign out</div>
+                </div>
             </div>
-            <div class="info-row">
-                <div class="info-icon"><i class="fas fa-envelope"></i></div>
-                <div class="info-text"><div class="info-label">Email address</div><div class="info-value">guest@messages.google.com</div></div>
-            </div>
-            <div class="info-row">
-                <div class="info-icon"><i class="fas fa-shield-alt"></i></div>
-                <div class="info-text"><div class="info-label">Chat backup</div><div class="info-value">Google Drive · Last sync today</div></div>
-            </div>
-            <div class="signout-btn" id="signoutMockBtn">
-                <span><i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i>Sign out</span>
-            </div>
+            <div style="height: 12px;"></div>
         </div>
     </div>
 </div>
@@ -794,7 +784,7 @@
             setTimeout(checkScrollVisibility, 100);
         }
         
-        // Conversation click handlers (original)
+        // Conversation click handlers
         document.querySelectorAll('.conversation').forEach(conv => {
             conv.addEventListener('click', (e) => {
                 const nameSpan = conv.querySelector('.contact-name');
@@ -822,7 +812,7 @@
             });
         }
 
-        // Search functionality (unchanged)
+        // Search functionality (identical from original, keeping fully functional)
         const searchInput = document.getElementById('searchInput');
         const dynamicArea = document.getElementById('dynamicArea');
         const originalCardsHTML = document.getElementById('cardsGrid')?.innerHTML || '';
@@ -935,14 +925,24 @@
                 debounceTimer = setTimeout(() => renderSearchResults(e.target.value), 150);
             });
         }
-
         reattachCardListeners();
 
-        // View switching functions (preserve original behavior)
-        function showSearchView() {
+        // View switching logic
+        function hideAllViews() {
             inboxView.style.display = 'none';
+            searchView.style.display = 'none';
+            if (profileView) profileView.style.display = 'none';
+        }
+        
+        function showInboxView() {
+            hideAllViews();
+            inboxView.style.display = 'flex';
+            setTimeout(checkScrollVisibility, 50);
+        }
+        
+        function showSearchView() {
+            hideAllViews();
             searchView.style.display = 'flex';
-            profileView.style.display = 'none';
             if (searchInput) {
                 searchInput.value = '';
                 renderSearchResults('');
@@ -952,54 +952,43 @@
             if (wrapper) wrapper.scrollTop = 0;
         }
         
-        function showInboxView() {
-            searchView.style.display = 'none';
-            inboxView.style.display = 'flex';
-            profileView.style.display = 'none';
-            setTimeout(checkScrollVisibility, 50);
-        }
-
         function showProfileView() {
-            inboxView.style.display = 'none';
-            searchView.style.display = 'none';
+            hideAllViews();
             profileView.style.display = 'flex';
-            // Reset profile scroll to top
-            const profileContent = document.querySelector('.profile-content');
-            if (profileContent) profileContent.scrollTop = 0;
-            console.log('👤 Profile view opened — clear slate');
+            // Reset scroll position in profile view
+            const profileScroll = document.querySelector('.profile-scroll');
+            if (profileScroll) profileScroll.scrollTop = 0;
         }
-
+        
+        // Attach event listeners
         if (searchIcon) searchIcon.addEventListener('click', showSearchView);
         if (searchViewBack) searchViewBack.addEventListener('click', showInboxView);
-        
-        // Profile avatar click -> clears everything and shows profile view
         if (profileAvatar) {
-            profileAvatar.addEventListener('click', () => {
+            profileAvatar.addEventListener('click', (e) => {
+                console.log('👤 Profile avatar clicked — opening profile view');
                 profileAvatar.style.backgroundColor = '#3C4050';
                 setTimeout(() => profileAvatar.style.backgroundColor = '#2B2D36', 150);
                 showProfileView();
             });
         }
-        
-        // Close profile view via X button
         if (closeProfileBtn) {
             closeProfileBtn.addEventListener('click', () => {
-                closeProfileBtn.style.backgroundColor = '#3C4050';
-                setTimeout(() => closeProfileBtn.style.backgroundColor = '#2B2D36', 120);
+                console.log('❌ Closing profile view, back to inbox');
                 showInboxView();
             });
         }
         
-        // Optional: sign out mock just logs (no state change)
-        const signoutMock = document.getElementById('signoutMockBtn');
-        if (signoutMock) {
-            signoutMock.addEventListener('click', () => {
-                console.log('🔓 Sign out clicked — demo action');
-                signoutMock.style.opacity = '0.7';
-                setTimeout(() => signoutMock.style.opacity = '1', 150);
-            });
-        }
-
+        // Profile menu item interactions (console logs, keep aesthetic)
+        const settingsItem = document.getElementById('profileSettingsItem');
+        const helpItem = document.getElementById('profileHelpItem');
+        const aboutItem = document.getElementById('profileAboutItem');
+        const signOutItem = document.getElementById('profileSignOutItem');
+        
+        if (settingsItem) settingsItem.addEventListener('click', () => console.log('⚙️ Settings & privacy clicked'));
+        if (helpItem) helpItem.addEventListener('click', () => console.log('🆘 Help & feedback clicked'));
+        if (aboutItem) aboutItem.addEventListener('click', () => console.log('ℹ️ About Google Messages clicked'));
+        if (signOutItem) signOutItem.addEventListener('click', () => console.log('🚪 Sign out clicked — demo action'));
+        
         const unifiedDiv = document.querySelector('.unified-search');
         if (unifiedDiv && searchInput) {
             unifiedDiv.addEventListener('click', (e) => { 
@@ -1007,10 +996,9 @@
             });
         }
         
-        // Ensure inbox view is active initially
+        // Initial view: inbox
         showInboxView();
-        
-        console.log('✅ Profile view integrated: click avatar -> profile with X button, back to messages.');
+        console.log('✅ Fully merged: Profile view with X close button, messages + search unchanged.');
     })();
 </script>
 </body>
